@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS180: Project 0 | SHU CAO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Outfit:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #ffffff;
+            --bg-mesh: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), 
+                       radial-gradient(at 50% 0%, hsla(225,39%,30%,0.04) 0, transparent 50%), 
+                       radial-gradient(at 100% 0%, hsla(339,49%,30%,0.04) 0, transparent 50%);
+            --text-dark: #1a1a24;
+            --text-gray: #646473;
+            --color-teal: #0d9488;
+            --color-coral: #e11d48;
+            --color-indigo: #4f46e5;
+            --color-amber: #d97706;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.08), 0 10px 20px rgba(79, 70, 229, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-main);
+            background-image: var(--bg-mesh);
+            color: var(--text-dark);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        h1, h2, .serif-text {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .tech-text {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        header {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 6rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 1rem;
+            background: linear-gradient(270deg, var(--color-coral), var(--color-indigo), var(--color-teal));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 6s ease infinite, fadeInDown 1.2s ease-out;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        header h1:hover {
+            transform: scale(1.05);
+        }
+
+        header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-gray);
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 1.2s ease-out 0.3s both;
+        }
+
+        .author-badge {
+            padding: 0.8rem 2.5rem;
+            background: var(--glass-bg);
+            border: 2px solid rgba(79, 70, 229, 0.1);
+            border-radius: 100px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            color: var(--color-indigo);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            animation: fadeIn 1.5s ease-out 0.6s both;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .author-badge:hover {
+            background: var(--color-indigo);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 2rem 6rem 2rem;
+        }
+
+        .intro-lead {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 7rem auto;
+            font-size: 1.4rem;
+            color: var(--text-gray);
+            line-height: 2.2;
+        }
+
+        section {
+            margin-bottom: 8rem;
+        }
+
+        .section-header {
+            margin-bottom: 3.5rem;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 3.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--color-coral);
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3.5rem;
+            margin-bottom: 4rem;
+            perspective: 1000px; 
+        }
+
+        @media (max-width: 768px) {
+            .image-grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 20px;
+            padding: 1rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+            backdrop-filter: blur(20px);
+            transition: transform 0.1s ease, box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            transform: translateZ(30px);
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .card:hover .card-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .zoom-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--color-indigo);
+            font-family: 'Space Grotesk', sans-serif;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            transform: translateZ(40px);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        .zoom-tag.coral { color: var(--color-coral); }
+        .zoom-tag.teal { color: var(--color-teal); }
+        .zoom-tag.amber { color: var(--color-amber); }
+
+        .card:hover .zoom-tag {
+            background: var(--text-dark);
+            color: white;
+        }
+
+        .card-content {
+            padding: 2rem 1rem 1rem 1rem;
+            text-align: center;
+            transform: translateZ(20px);
+        }
+
+        .card-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-dark);
+        }
+
+        .card-content p {
+            color: var(--text-gray);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .tooltip-trigger {
+            position: relative;
+            display: inline-block;
+            border-bottom: 2px dashed var(--color-amber);
+            cursor: help;
+            color: var(--color-amber);
+            font-weight: 600;
+        }
+
+        .tooltip-trigger .tooltip-content {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--text-dark);
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 1rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            font-size: 0.85rem;
+            font-weight: 400;
+            line-height: 1.5;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .tooltip-trigger:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .analysis-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 3.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .analysis-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--color-teal), var(--color-indigo));
+        }
+
+        .analysis-box h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .analysis-box p {
+            color: var(--text-gray);
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        .dolly-showcase {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            padding: 4rem 3rem;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .dolly-showcase img {
+            max-width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            margin-bottom: 3rem;
+            transition: transform 0.4s ease;
+        }
+        
+        .dolly-showcase img:hover {
+            transform: scale(1.02);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Project 0</h1>
+        <h2>Becoming Friends with Your Camera</h2>
+        <div class="author-badge">
+            SHU CAO
+        </div>
+    </header>
+
+    <main>
+        <div class="intro-lead reveal">
+            <span class="serif-text" style="font-size: 1.8rem; color: var(--text-dark);">"</span>
+            By systematically manipulating the geometric relationships between physical distance and optical focal lengths, this project explores how the camera maps 3D reality onto a 2D sensory projection—forming the fundamental building blocks of computer vision and visual perception.
+            <span class="serif-text" style="font-size: 1.8rem; color: var(--text-dark);">"</span>
+        </div>
+
+        <section id="part1" class="reveal">
+            <div class="section-header">
+                <h2>I. The Portrait</h2>
+                <p>Perspective Distortion & Focal Balancing</p>
+            </div>
+
+            <div class="image-grid">
+                <div class="card tilt-card">
+                    <div class="card-img-wrapper">
+                        <img src="selfie_close.jpg" alt="Close-up Selfie">
+                        <div class="zoom-tag coral">1.0x Wide</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Close-up Capture</h3>
+                        <p>Taken at extremely close proximity without zoom, introducing pronounced facial feature magnification.</p>
+                    </div>
+                </div>
+
+                <div class="card tilt-card">
+                    <div class="card-img-wrapper">
+                        <img src="selfie_zoom.jpg" alt="Zoomed Portrait">
+                        <div class="zoom-tag indigo">2.3x Telephoto</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Stepped Back & Zoomed</h3>
+                        <p>Captured from an extended distance with a 2.3x optical zoom, keeping head size constant while normalizing geometry.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-box">
+                <h4>In-Depth Optical Analysis</h4>
+                <p>The stark difference between these two portraits illustrates that 
+                    <span class="tooltip-trigger">perspective distortion
+                        <span class="tooltip-content"><strong>Perspective Distortion:</strong> A warping of an object's proportions caused by the relative distance of its features to the camera lens.</span>
+                    </span> 
+                is entirely a function of <strong>subject-to-camera distance</strong>. When a camera is positioned inches from the face at <span style="color: var(--color-coral); font-weight: 600;">1.0x</span>, the distance from the sensor to the nose versus the ears exhibits a massive proportional ratio, projecting central features disproportionately large.</p>
+                <p>By stepping backward and introducing a <span style="color: var(--color-indigo); font-weight: 600;">2.3x optical zoom</span>, the absolute distance from the camera to all parts of the face becomes uniform relative to minor depth variations, yielding a natural portrait.</p>
+            </div>
+        </section>
+
+        <section id="part2" class="reveal">
+            <div class="section-header">
+                <h2>II. Architecture</h2>
+                <p>Perspective Compression in Urban Spaces</p>
+            </div>
+
+            <div class="image-grid">
+                <div class="card tilt-card">
+                    <div class="card-img-wrapper">
+                        <img src="building_zoom.jpg" alt="Zoomed Architecture">
+                        <div class="zoom-tag teal">3.2x Telephoto</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Far Distance + Zoom</h3>
+                        <p>Captured from afar using a 3.2x telephoto factor, causing the building depth layers to flatten significantly.</p>
+                    </div>
+                </div>
+
+                <div class="card tilt-card">
+                    <div class="card-img-wrapper">
+                        <img src="building_close.jpg" alt="Walked-up Architecture">
+                        <div class="zoom-tag amber">1.0x Wide</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>Close Distance + No Zoom</h3>
+                        <p>Captured closely at 1.0x magnification, revealing deep, aggressive vanishing points and spatial expansion.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-box">
+                <h4 style="color: var(--color-teal);">Geometric Reasoning</h4>
+                <p>This experiment reverses the scaling logic to demonstrate 
+                    <span class="tooltip-trigger">perspective compression
+                        <span class="tooltip-content"><strong>Compression:</strong> The visual effect where distant background elements appear larger and closer to foreground subjects, common in telephoto lenses.</span>
+                    </span>. In the <span style="color: var(--color-teal); font-weight: 600;">3.2x telephoto</span> shot, the absolute distance to the building is exceptionally large compared to the structural depth differences.</p>
+                <p>Because all points share a nearly identical distance ratio to the lens, they are magnified uniformly, compressing a 3D facade into a flattened, 2D graphic plane. Stepping up closely at <span style="color: var(--color-amber); font-weight: 600;">1.0x</span> restores natural convergence lines.</p>
+            </div>
+        </section>
+
+        <section id="part3" class="reveal">
+            <div class="section-header">
+                <h2>III. The Dolly Zoom</h2>
+                <p>Synthesizing the Cinematic Vertigo Effect</p>
+            </div>
+
+            <div class="dolly-showcase">
+                <img src="dolly_zoom.gif" alt="Dolly Zoom Animation">
+                <div class="analysis-box" style="text-align: left; padding: 2.5rem; margin-top: 2rem; border-top: 4px solid var(--color-coral);">
+                    <h4 style="margin-top: 0; color: var(--color-coral);">Cinematic Mechanics</h4>
+                    <p>The Dolly Zoom creates a psychological illusion by simultaneously executing opposite camera adjustments: moving the physical camera backward while scaling the optical zoom forward.</p>
+                    <p>By tuning the framing so the primary subject remains constant in scale, the background undergoes intense perspective warping—shifting dynamically from a wide spatial field to a heavily compressed backdrop.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+            reveals.forEach(rev => observer.observe(rev));
+
+            const cards = document.querySelectorAll('.tilt-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left; 
+                    const y = e.clientY - rect.top;  
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                    card.style.transition = 'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                });
+                
+                card.addEventListener('mouseenter', () => {
+                    card.style.transition = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
