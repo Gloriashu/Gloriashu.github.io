@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colorizing the Prokudin&#8209;Gorskii Collection — Shu Cao</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-warm:#f3ecda;
+    --ink:#221f1a;
+    --ink-soft:#6b6355;
+    --rose:#d1207a;
+    --teal:#0e9d95;
+    --gold:#e0a400;
+    --blue:#2a4fa0;
+    --line:#e2d8bd;
+    --max:760px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    font-size:17px;
+    line-height:1.65;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', Georgia, serif;
+    color:var(--ink);
+    letter-spacing:0.1px;
+    margin:0;
+  }
+  a{color:var(--rose);}
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 24px;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  .channel-bars{display:flex; height:6px; width:100%;}
+  .channel-bars span{flex:1;}
+  .channel-bars .b{background:var(--blue);}
+  .channel-bars .g{background:var(--teal);}
+  .channel-bars .r{background:var(--rose);}
+
+  header.hero{padding:0;}
+  .hero-top{padding:56px 24px 8px; max-width:var(--max); margin:0 auto; text-align:center;}
+  .kicker{font-size:14.5px; color:var(--ink-soft); margin:0 0 22px; letter-spacing:0.2px;}
+  .kicker b{color:var(--rose);}
+  h1.title{
+    font-size:40px; line-height:1.18; font-weight:700;
+    margin:0 auto 22px; max-width:16ch;
+  }
+  .title .accent{color:var(--rose); font-style:italic; font-weight:500;}
+  .byline-name{
+    display:block;
+    font-family:'Fraunces', serif; font-weight:600; font-style:italic;
+    font-size:22px; color:var(--ink);
+    margin:0 0 28px;
+  }
+  .byline-name::before{content:"by "; font-style:normal; font-weight:400; color:var(--ink-soft); font-size:16px;}
+  .dek{
+    font-size:18px; color:var(--ink-soft); max-width:56ch; margin:0 auto; text-align:left;
+  }
+
+  .hero-visual{
+    display:flex; align-items:center; justify-content:center;
+    gap:20px; flex-wrap:wrap; padding:36px 24px 20px; max-width:var(--max); margin:0 auto;
+  }
+  .hero-visual figure{margin:0; text-align:center;}
+  .hero-visual img{display:block; border:1px solid var(--line); background:#fff; box-shadow:0 10px 28px -14px rgba(30,20,10,0.35);}
+  #hero-strip{height:300px; width:auto;}
+  #hero-result{height:300px; width:auto;}
+  .hero-arrow{font-family:'Fraunces', serif; font-size:30px; color:var(--gold);}
+  .hero-visual figcaption{font-size:13px; color:var(--ink-soft); margin-top:10px; font-style:italic;}
+
+  main{max-width:var(--max); margin:0 auto; padding:0 24px;}
+  section{padding:56px 0;}
+  section + section{border-top:1px solid var(--line);}
+
+  .section-head{display:flex; align-items:baseline; gap:14px; margin-bottom:8px; flex-wrap:wrap;}
+  .section-num{font-family:'Fraunces', serif; font-style:italic; color:var(--gold); font-size:20px;}
+  h2{font-size:28px; font-weight:600;}
+  h3{font-size:19px; font-weight:600; margin:30px 0 8px; color:var(--blue);}
+  p.lead{color:var(--ink-soft); margin:14px 0 22px; max-width:68ch; font-size:17.5px;}
+  p{margin:0 0 16px;}
+  code{background:var(--paper-warm); padding:1px 6px; border-radius:3px; font-size:0.92em;}
+
+  table.shift-table{width:100%; border-collapse:collapse; margin:20px 0 10px; font-size:14.5px;}
+  table.shift-table th, table.shift-table td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line);}
+  table.shift-table th{font-weight:600; color:var(--blue); font-size:12.5px; border-bottom:2px solid var(--ink);}
+  table.shift-table td.mono{font-variant-numeric: tabular-nums;}
+  table.shift-table tr:hover td{background:var(--paper-warm);}
+  table.shift-table td.time{color:var(--ink-soft); font-size:13.5px;}
+
+  /* single-column, large image stack -- replaces the old side-by-side grid */
+  .plate-stack{margin-top:28px;}
+  figure.plate{margin:0 0 40px;}
+  figure.plate img{width:100%; height:auto; display:block; border:1px solid var(--line); background:#fff;}
+  figure.plate figcaption{margin-top:10px; display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:6px;}
+  figure.plate figcaption .name{font-weight:600; color:var(--ink); font-size:15px;}
+  figure.plate figcaption .shift{color:var(--ink-soft); font-size:13px; font-family:'JetBrains Mono', monospace;}
+  figure.plate.own img{border-color:var(--gold); border-width:2px;}
+  .own-tag{display:inline-block; font-size:11px; color:#fff; background:var(--rose); padding:1px 7px; border-radius:20px; margin-left:8px; font-weight:600; vertical-align:middle; font-family:'Source Sans 3',sans-serif;}
+
+  /* before/after now stacked, not side by side */
+  .compare-stack{margin:26px 0 40px;}
+  .compare-stack img{width:100%; height:auto; display:block; border:1px solid var(--line); background:#fff;}
+  .compare-label{display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:0.4px; margin-bottom:8px; padding:3px 10px; border-radius:20px;}
+  .compare-label.before{color:#fff; background:var(--rose);}
+  .compare-label.after{color:#fff; background:var(--teal); margin-top:16px;}
+
+  .note-box{background:var(--paper-warm); border-left:4px solid var(--rose); padding:18px 22px; margin:22px 0; font-size:15.5px;}
+  .note-box.gold{border-left-color:var(--gold);}
+  .note-box.teal{border-left-color:var(--teal);}
+  .note-box.blue{border-left-color:var(--blue);}
+  .note-box p{margin:0;}
+  .note-box p + p{margin-top:10px;}
+  .note-box h4{margin:0 0 8px; font-family:'Fraunces',serif; font-size:16.5px; color:var(--ink); font-weight:600;}
+
+  .howto{border:1px dashed var(--gold); padding:18px 22px; margin:24px 0; font-size:15px; color:var(--ink-soft);}
+  .howto h4{margin:0 0 8px; color:var(--ink); font-family:'Fraunces',serif; font-weight:600; font-size:16px;}
+  .howto ol{margin:8px 0 0; padding-left:20px;}
+  .howto li{margin-bottom:6px;}
+
+  footer{padding:44px 24px 70px; text-align:center; font-size:14px; color:var(--ink-soft);}
+  footer .sig{font-family:'Fraunces', serif; font-style:italic; color:var(--ink); font-size:16px; display:block; margin-bottom:6px;}
+
+  @media (max-width:760px){
+    h1.title{font-size:30px;}
+    .byline-name{font-size:19px;}
+    #hero-strip, #hero-result{height:200px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="channel-bars"><span class="b"></span><span class="g"></span><span class="r"></span></div>
+  <div class="hero-top">
+    <p class="kicker">CS180/280A &middot; Project 1 &middot; <b>Computational Photography</b></p>
+    <h1 class="title">Colorizing the <span class="accent">Prokudin&#8209;Gorskii</span> Collection</h1>
+    <span class="byline-name">Shu Cao</span>
+    <p class="dek">
+      Between 1909 and 1915, Sergei Prokudin&#8209;Gorskii photographed the Russian Empire in
+      color &mdash; decades before color film existed &mdash; by exposing three black&#8209;and&#8209;white
+      plates through red, green, and blue filters. This project puts those three plates back
+      together automatically, for seventeen of his surviving glass negatives.
+    </p>
+  </div>
+
+  <div class="hero-visual">
+    <figure>
+      <img id="hero-strip" src="media/hero_raw_strip.jpg" alt="Raw stacked B/G/R glass plate scan">
+      <figcaption>one scan, three exposures</figcaption>
+    </figure>
+    <span class="hero-arrow">&#8594;</span>
+    <figure>
+      <img id="hero-result" src="media/church_bells.jpg" alt="Aligned and colorized result">
+      <figcaption>aligned &amp; colorized</figcaption>
+    </figure>
+  </div>
+  <div class="channel-bars"><span class="r"></span><span class="g"></span><span class="b"></span></div>
+</header>
+
+<main>
+
+  <section id="overview">
+    <div class="section-head"><span class="section-num">01</span><h2>The problem</h2></div>
+    <p class="lead">
+      Each digitized negative is one tall grayscale image: the blue&#8209;filtered exposure sits
+      on top, green in the middle, red on the bottom. To get a color photo back, I split the
+      scan into its three channels and search for the shift that brings green and red back
+      into register with blue. Nail the alignment, and stacking the channels as R/G/B gives
+      back the original scene in color. Miss it, and every edge in the photo splits into a
+      little rainbow, like this:
+    </p>
+
+    <figure style="margin:28px 0 8px;">
+      <img src="media/church_flicker.gif" alt="Flickering comparison of the church photo before and after alignment" style="width:100%; height:auto; border:1px solid var(--line); display:block;">
+    </figure>
+
+    <div class="howto">
+      <h4>How I made that flicker gif</h4>
+      <p>Two frames, saved as one animated <code>.gif</code>:</p>
+      <ol>
+        <li>Build the naive composite: <code>np.dstack([r, g, b])</code> with zero shift.</li>
+        <li>Build the aligned composite the normal way, once I know the shifts.</li>
+        <li>Crop both to the exact same region so the comparison is fair.</li>
+        <li>In Python/Pillow: <code>frame1.save("out.gif", save_all=True, append_images=[frame2], duration=[900,900], loop=0)</code>.</li>
+      </ol>
+      <p>Drop the resulting <code>.gif</code> into <code>media/</code> and reference it with a normal
+        <code>&lt;img&gt;</code> tag &mdash; browsers animate GIFs automatically, no JavaScript needed.</p>
+    </div>
+  </section>
+
+  <section id="single-scale">
+    <div class="section-head"><span class="section-num">02</span><h2>Starting small: single&#8209;scale alignment</h2></div>
+    <p class="lead">
+      The three low&#8209;resolution JPEG scans are only a few hundred pixels tall per channel, so
+      before building anything clever I just tried every offset in a &plusmn;15 pixel window and
+      kept whichever one scored best. Simple, and it turned out to be enough for these three.
+    </p>
+    <p>
+      The question I actually spent time on was <em>what counts as a good score</em>. The obvious
+      first idea is <b>L2 distance</b>: subtract the two patches, square, sum &mdash; smaller means
+      more similar. It works, but it quietly assumes the two patches should have similar
+      brightness, which isn't really true here: the red, green, and blue exposures of the same
+      glass plate can have pretty different overall brightness and contrast. So I switched to
+      <b>normalized cross&#8209;correlation (NCC)</b>: subtract each patch's own mean, divide by its
+      own norm, then compare &mdash; that cancels out brightness and contrast differences and
+      compares <em>pattern</em> instead of raw intensity. Larger is better. I used NCC everywhere
+      in the end, and it's noticeably more forgiving on the trickier plates later on.
+    </p>
+    <div class="plate-stack">
+      <figure class="plate">
+        <img src="media/cathedral_bells.jpg" alt="Cathedral, aligned">
+        <figcaption><span class="name">cathedral.jpg</span><span class="shift">G (5, 2) &middot; R (12, 3)</span></figcaption>
+      </figure>
+      <figure class="plate">
+        <img src="media/monastery_bells.jpg" alt="Monastery, aligned">
+        <figcaption><span class="name">monastery.jpg</span><span class="shift">G (&minus;3, 2) &middot; R (3, 2)</span></figcaption>
+      </figure>
+      <figure class="plate">
+        <img src="media/tobolsk_bells.jpg" alt="Tobolsk, aligned">
+        <figcaption><span class="name">tobolsk.jpg</span><span class="shift">G (3, 3) &middot; R (6, 3)</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="pyramid">
+    <div class="section-head"><span class="section-num">03</span><h2>Going big: an image pyramid</h2></div>
+    <p class="lead">
+      The full glass&#8209;plate scans are a different story &mdash; about 3200&times;3600px per channel.
+      The true offset can be over 100 pixels away, and a &plusmn;15px brute&#8209;force search doesn't
+      even cover the range, let alone do it quickly on a 12&#8209;megapixel channel.
+    </p>
+    <p>
+      The fix is a coarse&#8209;to&#8209;fine search. Shrink each channel by half, then half again, a
+      few times over, until the smallest copy is tiny. Find the best offset on that tiny copy
+      first &mdash; cheap, since there's almost nothing to search. Then step back down one level at
+      a time: double the offset found so far (since the image just doubled in size too), and
+      only search a small window around that guess to refine it. By the time I'm back at full
+      resolution, I'm only ever checking a handful of candidate shifts, not tens of thousands.
+    </p>
+    <p>
+      The other change that mattered was scoring on <b>gradients</b> instead of raw pixel
+      brightness. Sky and open water are nearly flat in brightness but look quite different
+      across the red/green/blue exposures &mdash; enough that a brightness score can get completely
+      distracted by a huge boring region and ignore the one part of the photo that actually has
+      something to align to. Comparing gradient magnitude instead means flat regions barely
+      vote at all, and the alignment ends up following whatever has real structure &mdash; which is
+      usually the subject, not the sky behind it.
+    </p>
+
+    <table class="shift-table">
+      <thead><tr><th>Image</th><th>G shift (row, col)</th><th>R shift (row, col)</th><th>time</th></tr></thead>
+      <tbody>
+        <tr><td>church.tif</td><td class="mono">(25, 4)</td><td class="mono">(58, &minus;4)</td><td class="time">15.6s</td></tr>
+        <tr><td>harvesters.tif</td><td class="mono">(60, 18)</td><td class="mono">(123, 14)</td><td class="time">16.8s</td></tr>
+        <tr><td>icon.tif</td><td class="mono">(41, 17)</td><td class="mono">(90, 23)</td><td class="time">16.4s</td></tr>
+        <tr><td>ilemselga.tif</td><td class="mono">(40, 7)</td><td class="mono">(131, 11)</td><td class="time">16.8s</td></tr>
+        <tr><td>melons.tif</td><td class="mono">(81, 10)</td><td class="mono">(177, 14)</td><td class="time">16.3s</td></tr>
+        <tr><td>religous_painting.tif</td><td class="mono">(29, 5)</td><td class="mono">(69, 7)</td><td class="time">16.4s</td></tr>
+        <tr><td>self_portrait.tif</td><td class="mono">(78, 29)</td><td class="mono">(175, 37)</td><td class="time">16.4s</td></tr>
+        <tr><td>siren.tif</td><td class="mono">(49, &minus;5)</td><td class="mono">(96, &minus;24)</td><td class="time">16.5s</td></tr>
+        <tr><td>three_generations.tif</td><td class="mono">(53, 13)</td><td class="mono">(111, 10)</td><td class="time">16.4s</td></tr>
+        <tr><td>wharf.tif</td><td class="mono">(15, &minus;6)</td><td class="mono">(82, &minus;16)</td><td class="time">16.2s</td></tr>
+        <tr><td>emir.tif</td><td class="mono">(49, 24)</td><td class="mono">(107, 40)</td><td class="time">15.5s</td></tr>
+        <tr><td>masterwoman.tif</td><td class="mono">(47, 40)</td><td class="mono">(113, 56)</td><td class="time">13.8s</td></tr>
+        <tr><td>flower.tif</td><td class="mono">(9, 8)</td><td class="mono">(61, 14)</td><td class="time">13.7s</td></tr>
+        <tr><td>building.tif</td><td class="mono">(41, &minus;11)</td><td class="mono">(97, &minus;26)</td><td class="time">13.5s</td></tr>
+      </tbody>
+    </table>
+
+    <div class="plate-stack">
+      <figure class="plate"><img src="media/church_bells.jpg" alt="church"><figcaption><span class="name">church</span></figcaption></figure>
+      <figure class="plate"><img src="media/harvesters_bells.jpg" alt="harvesters"><figcaption><span class="name">harvesters</span></figcaption></figure>
+      <figure class="plate"><img src="media/icon_bells.jpg" alt="icon"><figcaption><span class="name">icon</span></figcaption></figure>
+      <figure class="plate"><img src="media/ilemselga_bells.jpg" alt="ilemselga"><figcaption><span class="name">ilemselga</span></figcaption></figure>
+      <figure class="plate"><img src="media/melons_bells.jpg" alt="melons"><figcaption><span class="name">melons</span></figcaption></figure>
+      <figure class="plate"><img src="media/religous_painting_bells.jpg" alt="religious painting"><figcaption><span class="name">religous_painting</span></figcaption></figure>
+      <figure class="plate"><img src="media/self_portrait_bells.jpg" alt="self portrait"><figcaption><span class="name">self_portrait</span></figcaption></figure>
+      <figure class="plate"><img src="media/siren_bells.jpg" alt="siren"><figcaption><span class="name">siren</span></figcaption></figure>
+      <figure class="plate"><img src="media/three_generations_bells.jpg" alt="three generations"><figcaption><span class="name">three_generations</span></figcaption></figure>
+      <figure class="plate"><img src="media/wharf_bells.jpg" alt="wharf"><figcaption><span class="name">wharf</span></figcaption></figure>
+      <figure class="plate"><img src="media/emir_bells.jpg" alt="emir of bukhara"><figcaption><span class="name">emir</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section id="performance">
+    <div class="section-head"><span class="section-num">04</span><h2>Wait, why is this so slow?</h2></div>
+    <p class="lead">
+      This is the part I'm actually proudest of, so it gets its own section instead of a
+      footnote.
+    </p>
+    <p>
+      My first working version of the pyramid did exactly what I described above &mdash; conceptually
+      right, but for every single candidate shift, it called <code>np.roll</code> on the <em>entire</em>
+      image and then compared the entire cropped frame. That's fine at the tiny top of the
+      pyramid. It is not fine at the bottom: I ran it on <code>church.tif</code>, walked away, and
+      came back to find it had been running for over nine minutes &mdash; for one image, out of
+      fourteen.
+    </p>
+    <div class="note-box blue">
+      <h4>Finding the bottleneck</h4>
+      <p>
+        Instead of guessing, I added timestamped log lines around every step &mdash; reading the
+        file, building each pyramid level, searching each level &mdash; and reran it. The coarse
+        levels finished almost instantly. Nearly all nine minutes were spent in the last,
+        finest level, where the image is back to (almost) full resolution and the search was
+        still rolling and comparing the whole multi&#8209;million&#8209;pixel array for every single
+        candidate offset.
+      </p>
+    </div>
+    <p>
+      The fix didn't need a smaller search window, just a cheaper way to score each candidate.
+      Instead of shifting the whole image and comparing every pixel, I compare the two images
+      on a <em>strided grid</em> of sample points &mdash; say, every 8th pixel in each direction. The
+      shift itself is still an exact integer&#8209;pixel offset; I'm just not spending time reading
+      pixels that a dense score doesn't actually need to make the same decision. That one
+      change took the search from touching tens of millions of pixels per candidate down to a
+      few hundred thousand.
+    </p>
+    <table class="shift-table">
+      <thead><tr><th></th><th>church.tif, one channel</th></tr></thead>
+      <tbody>
+        <tr><td>first working version</td><td class="mono">574.8s</td></tr>
+        <tr><td>after strided scoring</td><td class="mono">15.6s</td></tr>
+      </tbody>
+    </table>
+    <p>
+      About a <b>37&times;</b> speed&#8209;up, and it's the difference between "leave this running
+      overnight" and "run all fourteen images while I go get coffee." I added one more small
+      step after the pyramid finishes: a short full&#8209;precision polish that re&#8209;checks a couple
+      of pixels around the answer on a small central crop, to claw back the little bit of
+      precision the stride gives up.
+    </p>
+  </section>
+
+  <section id="bells-whistles">
+    <div class="section-head"><span class="section-num">05</span><h2>Bells &amp; whistles: automatic border cropping</h2></div>
+    <p class="lead">
+      Every glass plate carries its own physical border &mdash; a painted or taped edge, a
+      registration strip, sometimes a hand&#8209;written plate number. Once the three channels are
+      aligned to each other, each channel's border lands in a slightly different place, so
+      instead of a clean edge, the final photo gets a ring of false color where the borders no
+      longer coincide.
+    </p>
+    <p>
+      My detector checks every row and column of each channel: what fraction of its pixels sit
+      close to that row or column's own median value? A painted border scores very high on
+      this &mdash; even where a stamped plate number interrupts it, since the digits only ever cover
+      a small minority of the pixels. A plain variance threshold fails exactly there, because a
+      handful of bright digit strokes is enough to inflate the variance of an otherwise blank
+      strip and make the detector stop short of the real edge. The final crop takes the
+      innermost boundary found across all three channels, so a border only one channel has is
+      still removed.
+    </p>
+
+    <h3>Before &amp; after</h3>
+    <div class="compare-stack">
+      <span class="compare-label before">before</span>
+      <img src="media/church_raw.jpg" alt="church before cropping">
+      <span class="compare-label after">after</span>
+      <img src="media/church_bells.jpg" alt="church after cropping">
+    </div>
+    <div class="compare-stack">
+      <span class="compare-label before">before</span>
+      <img src="media/three_generations_raw.jpg" alt="three generations before cropping">
+      <span class="compare-label after">after</span>
+      <img src="media/three_generations_bells.jpg" alt="three generations after cropping">
+    </div>
+    <p>Also applied in the same pass: automatic white balance (gray&#8209;world assumption) and
+      per&#8209;channel contrast stretching, both visible in the "after" frames above.</p>
+  </section>
+
+  <section id="difficult-cases">
+    <div class="section-head"><span class="section-num">06</span><h2>What the harder images taught me</h2></div>
+
+    <div class="note-box gold">
+      <h4>emir.tif</h4>
+      <p>
+        This is the famous hard case for this collection: the sitter's silk robe reflects red,
+        green, and blue light very differently, so it doesn't have a consistent brightness
+        pattern across the three exposures at all. Scoring on gradients rather than raw
+        intensity handled it cleanly with no manual intervention &mdash; the result above shows no
+        visible ghosting on the robe, beard, or medals.
+      </p>
+    </div>
+
+    <div class="note-box teal">
+      <h4>harvesters.tif</h4>
+      <p>
+        The foreground row of tea&#8209;pickers and the background field sit at very different
+        distances from the camera, so the small camera movement between the three exposures
+        displaces them by different amounts &mdash; a single global translation can't satisfy both
+        at once. An earlier version let the densely&#8209;textured field dominate the gradient score
+        and under&#8209;aligned the people, who are the actual subject. Re&#8209;scoring on gradients and
+        de&#8209;emphasizing the outer border fixed it: the version above aligns the people cleanly,
+        with only the faintest residual softness in the distant field.
+      </p>
+    </div>
+
+    <div class="note-box">
+      <h4>masterwoman.tif</h4>
+      <p>
+        This one is worth a closer look. The yurt wall and the patterned carpet she's standing
+        on are sharp &mdash; genuinely well aligned, no ghosting anywhere in the background. The
+        color fringing is concentrated entirely on the woman herself, especially her beaded
+        headdress and the folds of her coat.
+      </p>
+      <p>
+        Because the background lines up perfectly, the camera clearly didn't move between
+        exposures &mdash; so the shift has to be coming from the subject. My best guess is that she
+        turned or shifted her weight slightly during the three exposures: a rotation displaces
+        different parts of a body by different amounts and in different directions at once
+        (a shoulder moves one way, a hem another), which a single rigid (row, column)
+        translation has no way to represent. It's a nice, concrete example of the assumption
+        this whole method rests on &mdash; a static scene &mdash; breaking in a very localized way.
+      </p>
+    </div>
+  </section>
+
+  <section id="own-examples">
+    <div class="section-head"><span class="section-num">07</span><h2>Three more, of my own choosing</h2></div>
+    <p class="lead">
+      Picked from the <a href="https://www.loc.gov/collections/prokudin-gorskii/?st=grid" target="_blank" rel="noopener">Library of Congress collection</a>,
+      downloaded as raw glass&#8209;negative scans and run through the same pipeline above.
+    </p>
+    <div class="plate-stack">
+      <figure class="plate own">
+        <img src="media/building_bells.jpg" alt="building, aligned">
+        <figcaption><span class="name">building<span class="own-tag">mine</span></span><span class="shift">G (41, &minus;11) &middot; R (97, &minus;26)</span></figcaption>
+      </figure>
+      <figure class="plate own">
+        <img src="media/flower_bells.jpg" alt="flower, aligned">
+        <figcaption><span class="name">flower<span class="own-tag">mine</span></span><span class="shift">G (9, 8) &middot; R (61, 14)</span></figcaption>
+      </figure>
+      <figure class="plate own">
+        <img src="media/masterwoman_bells.jpg" alt="masterwoman, aligned">
+        <figcaption><span class="name">masterwoman<span class="own-tag">mine</span></span><span class="shift">G (47, 40) &middot; R (113, 56)</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="channel-bars"><span class="b"></span><span class="g"></span><span class="r"></span></div>
+  <p style="margin-top:32px;">
+    <span class="sig">Shu Cao</span>
+    CS180/280A &middot; Project 1 &middot; Colorizing the Prokudin&#8209;Gorskii Collection
+  </p>
+</footer>
+
+</body>
+</html>
